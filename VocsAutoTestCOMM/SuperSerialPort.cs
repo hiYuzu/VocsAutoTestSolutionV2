@@ -171,6 +171,7 @@ namespace VocsAutoTestCOMM
                 byte[] data = FPI.Encoder(command, this.isForward);
                 Console.WriteLine("发送命令: " + ByteStrUtil.ByteToKHex(data));
                 serialPort.Write(data, 0, data.Length);
+                Thread.Sleep(100);
                 return true;
             }
             return false;
