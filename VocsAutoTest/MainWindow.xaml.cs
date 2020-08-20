@@ -10,6 +10,7 @@ using VocsAutoTestCOMM;
 using VocsAutoTestBLL;
 using VocsAutoTestBLL.Model;
 using System.Text;
+using VocsAutoTest.Tools;
 
 namespace VocsAutoTest
 {
@@ -26,6 +27,7 @@ namespace VocsAutoTest
         private ConcentrationMeasurePage concentrationPage;
         private ConcentrationMeasureControlPage concentrationControlPage;
         private VocsMgmtPage vocsMgmtPage;
+        private readonly SpecDataSave specDataSave;
         //日志栏折叠
         private bool isLogBoxOpen = true;
         //日志栏高度
@@ -41,6 +43,7 @@ namespace VocsAutoTest
             DataForward.Instance.StartService();
             InitBottomInfo();
             measureMgr = MeasureMgrImpl.Instance;
+            specDataSave = SpecDataSave.Instance;
             InitPage();
             VocsCollectBtn_Click(null, null);
             PassPortImpl.GetInstance().PassValueEvent += new PassPortDelegate(ReceievedValues);
@@ -431,6 +434,11 @@ namespace VocsAutoTest
                     {
                         concentrationControlPage.Stop_Measure();
                     }
+                    //关闭连续保存
+                    if (specDataSave.StartSave)
+                    {
+                        specControlPage.StartSave_Click(null, null);
+                    }
                 }
                 else
                 {
@@ -467,8 +475,12 @@ namespace VocsAutoTest
             measureMgr.timeInterval = int.Parse(ReadInterval.Text);
             measureMgr.specType = DataType.SelectedIndex.ToString();
             measureMgr.lightPath = lightPath.SelectedIndex.ToString();
-            measureMgr.tempValues = BitConverter.GetBytes(float.Parse(tempTextBox.Text));
-            measureMgr.pressValues = BitConverter.GetBytes(float.Parse(pressTextBox.Text));
+            byte[] tempValues = BitConverter.GetBytes(float.Parse(tempTextBox.Text));
+            byte[] pressValues = BitConverter.GetBytes(float.Parse(pressTextBox.Text));
+            Array.Reverse(tempValues);
+            Array.Reverse(pressValues);
+            measureMgr.tempValues = tempValues;
+            measureMgr.pressValues = pressValues;
             measureMgr.StartMultiMeasure();
         }
         private void EndMeasure(bool beEnd)
