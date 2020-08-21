@@ -131,11 +131,11 @@ namespace VocsAutoTest
         private void InitPage()
         {
             algoPage = new AlgoComOne();
-            algoControlPage = new AlgoGeneraControlPage();
+            algoControlPage = new AlgoGeneraControlPage(algoPage);
             specPage = new SpecComOne();
             specControlPage = new SpecMeasureControlPage(specPage);
             concentrationPage = new ConcentrationMeasurePage();
-            concentrationControlPage = new ConcentrationMeasureControlPage();
+            concentrationControlPage = new ConcentrationMeasureControlPage(concentrationPage);
         }
         private void ShowTimer_Tick(object sender, EventArgs e)
         {
